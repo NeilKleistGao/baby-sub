@@ -1,5 +1,7 @@
 #include "typer.h"
 
+int TypeVariable::s_count = 0;
+
 Typer::Typer() {
     m_bool_type = std::make_shared<PrimitiveType>();
     m_int_type = std::make_shared<PrimitiveType>();
@@ -31,6 +33,19 @@ std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp)
         if (m_context.find(var->var.name) != m_context.end()) {
             res = m_context[var->var.name];
         }
+    }
+    else if (dynamic_cast<Lambda*>(p_exp.get()) != nullptr) {
+        auto* lambda = dynamic_cast<Lambda*>(p_exp.get());
+        auto param = std::make_shared<TypeVariable>();
+
+        m_context[lambda->var->var.name] = param;
+        auto body_type = Infer(lambda->body);
+        m_context.erase(lambda->var->var.name);
+
+        auto func = std::make_shared<FunctionType>();
+        func->lhs = param;
+        func->rhs = body_type;
+        res = func;
     }
 
     return res;
