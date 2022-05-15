@@ -3,6 +3,7 @@
 int TypeVariable::s_count = 0;
 
 Typer::Typer() {
+    TypeVariable::s_count = 0;
     m_bool_type = std::make_shared<PrimitiveType>();
     m_int_type = std::make_shared<PrimitiveType>();
 
@@ -17,7 +18,7 @@ Typer::Typer() {
     m_context["add"] = add;
 }
 
-std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp) {
+std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp, int p_level) {
     std::shared_ptr<BabyType> res = nullptr;
     if (dynamic_cast<Literal*>(p_exp.get()) != nullptr) {
         auto* lit = dynamic_cast<Literal*>(p_exp.get());
@@ -39,7 +40,7 @@ std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp)
         auto param = std::make_shared<TypeVariable>();
 
         m_context[lambda->var->var.name] = param;
-        auto body_type = Infer(lambda->body);
+        auto body_type = Infer(lambda->body, p_level);
         m_context.erase(lambda->var->var.name);
 
         auto func = std::make_shared<FunctionType>();
@@ -51,15 +52,26 @@ std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp)
         auto* app = dynamic_cast<Application*>(p_exp.get());
         auto ret = std::make_shared<TypeVariable>();
 
-        auto func = Infer(app->lambda);
-        auto arg = Infer(app->value);
+        auto func = Infer(app->lambda, p_level);
+        auto arg = Infer(app->value, p_level);
         auto func_mirror = std::make_shared<FunctionType>();
         func_mirror->lhs = arg; func_mirror->rhs = ret;
         Constrain(func, func_mirror);
 
         res = ret;
     }
+    else if (dynamic_cast<Let*>(p_exp.get()) != nullptr) {
+        auto* let = dynamic_cast<Let*>(p_exp.get());
+        auto rhs_type = std::make_shared<PolymorphicType>();
+        rhs_type->level = p_level + 1;
+        rhs_type->body = Infer(let->rhs, p_level + 1);
 
+        m_context[let->var->var.name] = rhs_type;
+        res = Infer(let->body, p_level);
+        m_context.erase(let->var->var.name);
+    }
+
+    res->level = p_level;
     return res;
 }
 

@@ -68,12 +68,12 @@ std::shared_ptr<Let> Parser::ParseLet() {
         return nullptr;
     }
 
-    let_exp->body = Parse();
+    let_exp->rhs = Parse();
     if (m_tokens[m_pointer++].type != Token::Type::IN) {
         return nullptr;
     }
 
-    let_exp->rhs = Parse();
+    let_exp->body = Parse();
 
     return let_exp;
 }

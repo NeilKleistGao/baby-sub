@@ -34,4 +34,13 @@ struct TypeVariable : public BabyType {
     std::string ToString() override { return "a" + std::to_string(id); }
 };
 
+struct PolymorphicType : public BabyType{
+    std::shared_ptr<BabyType> body;
+    std::string ToString() override {
+        std::string str = body->ToString();
+        for (int i = 0; i < level; ++i) { str += "'"; }
+        return str;
+    }
+};
+
 #endif//BABY_SUB_BABY_TYPE_H

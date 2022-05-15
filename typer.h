@@ -16,7 +16,7 @@ public:
     Typer(Typer&&) = delete;
     Typer& operator=(Typer&&) = delete;
 
-    std::shared_ptr<BabyType> Infer(const std::shared_ptr<Expression>& p_exp);
+    std::shared_ptr<BabyType> Infer(const std::shared_ptr<Expression>& p_exp, int p_level = 0);
 private:
     using Context = std::unordered_map<std::string, std::shared_ptr<BabyType>>;
     Context m_context;
