@@ -26,6 +26,12 @@ std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp)
             res = m_int_type;
         }
     }
+    else if (dynamic_cast<Variable*>(p_exp.get()) != nullptr) {
+        auto* var = dynamic_cast<Variable*>(p_exp.get());
+        if (m_context.find(var->var.name) != m_context.end()) {
+            res = m_context[var->var.name];
+        }
+    }
 
     return res;
 }
