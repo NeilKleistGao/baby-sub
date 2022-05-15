@@ -47,6 +47,42 @@ std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp)
         func->rhs = body_type;
         res = func;
     }
+    else if (dynamic_cast<Application*>(p_exp.get()) != nullptr) {
+        auto* app = dynamic_cast<Application*>(p_exp.get());
+        auto ret = std::make_shared<TypeVariable>();
+
+        auto func = Infer(app->lambda);
+        auto arg = Infer(app->value);
+        auto func_mirror = std::make_shared<FunctionType>();
+        func_mirror->lhs = arg; func_mirror->rhs = ret;
+        Constrain(func, func_mirror);
+
+        res = ret;
+    }
 
     return res;
+}
+
+void Typer::Constrain(const std::shared_ptr<BabyType>& p_lhs, const std::shared_ptr<BabyType>& p_rhs) {
+    if (dynamic_cast<FunctionType*>(p_lhs.get()) && dynamic_cast<FunctionType*>(p_rhs.get())) {
+        auto* func1 = dynamic_cast<FunctionType*>(p_lhs.get());
+        auto* func2 = dynamic_cast<FunctionType*>(p_rhs.get());
+
+        Constrain(func2->lhs, func1->lhs);
+        Constrain(func1->rhs, func2->rhs);
+    }
+    else if (dynamic_cast<TypeVariable*>(p_lhs.get())) {
+        auto* lhs = dynamic_cast<TypeVariable*>(p_lhs.get());
+        lhs->upper_bounds.push_back(p_rhs);
+        for (auto& lb : lhs->lower_bounds) {
+            Constrain(lb, p_rhs);
+        }
+    }
+    else if (dynamic_cast<TypeVariable*>(p_rhs.get())) {
+        auto* rhs = dynamic_cast<TypeVariable*>(p_rhs.get());
+        rhs->lower_bounds.push_back(p_lhs);
+        for (auto& ub : rhs->upper_bounds) {
+            Constrain(p_lhs, ub);
+        }
+    }
 }

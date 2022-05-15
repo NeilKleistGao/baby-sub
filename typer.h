@@ -2,6 +2,7 @@
 #define BABY_SUB_TYPER_H
 
 #include <unordered_map>
+#include <set>
 
 #include "baby_type.h"
 #include "parser/expression.h"
@@ -22,6 +23,8 @@ private:
 
     std::shared_ptr<PrimitiveType> m_bool_type;
     std::shared_ptr<PrimitiveType> m_int_type;
+
+    static void Constrain(const std::shared_ptr<BabyType>& p_lhs, const std::shared_ptr<BabyType>& p_rhs);
 };
 
 #endif//BABY_SUB_TYPER_H

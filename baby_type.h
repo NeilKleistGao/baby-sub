@@ -27,8 +27,8 @@ struct FunctionType : public BabyType {
 struct TypeVariable : public BabyType {
     static int s_count;
     int id;
-    std::vector<std::shared_ptr<TypeVariable>> lower_bounds;
-    std::vector<std::shared_ptr<TypeVariable>> upper_bounds;
+    std::vector<std::shared_ptr<BabyType>> lower_bounds;
+    std::vector<std::shared_ptr<BabyType>> upper_bounds;
 
     TypeVariable() : id(s_count++) {}
     std::string ToString() override { return "a" + std::to_string(id); }
