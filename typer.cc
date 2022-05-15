@@ -7,9 +7,6 @@ Typer::Typer() {
     m_bool_type->name = "bool";
     m_int_type->name = "int";
 
-    m_context["true"] = m_bool_type;
-    m_context["false"] = m_bool_type;
-
     auto add = std::make_shared<FunctionType>();
     add->lhs = m_int_type;
     add->rhs = std::make_shared<FunctionType>();
@@ -19,5 +16,16 @@ Typer::Typer() {
 }
 
 std::shared_ptr<BabyType> Typer::Infer(const std::shared_ptr<Expression>& p_exp) {
-    return nullptr;
+    std::shared_ptr<BabyType> res = nullptr;
+    if (dynamic_cast<Literal*>(p_exp.get()) != nullptr) {
+        auto* lit = dynamic_cast<Literal*>(p_exp.get());
+        if (lit->lit.type == Token::Type::BOOL) {
+            res = m_bool_type;
+        }
+        else {
+            res = m_int_type;
+        }
+    }
+
+    return res;
 }

@@ -23,7 +23,7 @@ std::string DoTest(const std::string& p_exp) {
 
     std::cout << "Baby Type: " << baby_type->ToString() << std::endl;
 
-    return "";
+    return baby_type->ToString();
 }
 
 TEST(SubAlgorithm, Basic) {
@@ -32,6 +32,6 @@ TEST(SubAlgorithm, Basic) {
     EXPECT_EQ(DoTest("\\x = x"), "'a -> 'a");
     EXPECT_EQ(DoTest("\\x = (x 42)"), "(int -> 'a) -> 'a");
     EXPECT_EQ(DoTest("((\\x = x) 42)"), "int");
-    EXPECT_EQ(DoTest("\\f= \\x = (f (f x))"), "('a ∨ 'b -> 'a) -> 'b -> 'a");
-    EXPECT_EQ(DoTest("let t = \\f = \\x = (f (f x)) in t"), "('a ∨ 'b -> 'a) -> 'b -> 'a");
+    EXPECT_EQ(DoTest("\\f= \\x = (f (f x))"), "('a v 'b -> 'a) -> 'b -> 'a");
+    EXPECT_EQ(DoTest("let t = \\f = \\x = (f (f x)) in t"), "('a v 'b -> 'a) -> 'b -> 'a");
 }
