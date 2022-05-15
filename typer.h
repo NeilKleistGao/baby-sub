@@ -1,0 +1,4 @@
+#ifndef BABY_SUB_TYPER_H
+#define BABY_SUB_TYPER_H
+
+#endif//BABY_SUB_TYPER_H
