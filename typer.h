@@ -23,8 +23,12 @@ private:
 
     std::shared_ptr<PrimitiveType> m_bool_type;
     std::shared_ptr<PrimitiveType> m_int_type;
+    std::unordered_map<std::shared_ptr<BabyType>, std::shared_ptr<BabyType>> m_visit;
 
     static void Constrain(const std::shared_ptr<BabyType>& p_lhs, const std::shared_ptr<BabyType>& p_rhs);
+    static std::shared_ptr<BabyType> Extrude(const std::shared_ptr<BabyType>& p_type, int p_level, bool p_polarity);
+
+    std::shared_ptr<BabyType> Instantiate(const std::shared_ptr<BabyType>& p_poly, int p_level);
 };
 
 #endif//BABY_SUB_TYPER_H

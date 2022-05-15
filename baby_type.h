@@ -21,7 +21,7 @@ struct FunctionType : public BabyType {
     std::shared_ptr<BabyType> lhs;
     std::shared_ptr<BabyType> rhs;
 
-    std::string ToString() override { return lhs->ToString() + " -> " + rhs->ToString(); }
+    std::string ToString() override { return "(" + lhs->ToString() + " -> " + rhs->ToString() + ")"; }
 };
 
 struct TypeVariable : public BabyType {
@@ -31,13 +31,8 @@ struct TypeVariable : public BabyType {
     std::vector<std::shared_ptr<BabyType>> upper_bounds;
 
     TypeVariable() : id(s_count++) {}
-    std::string ToString() override { return "a" + std::to_string(id); }
-};
-
-struct PolymorphicType : public BabyType{
-    std::shared_ptr<BabyType> body;
     std::string ToString() override {
-        std::string str = body->ToString();
+        std::string str = "a" + std::to_string(id);
         for (int i = 0; i < level; ++i) { str += "'"; }
         return str;
     }

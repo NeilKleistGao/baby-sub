@@ -7,6 +7,6 @@ find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(baby_sub test.cc parser/lex.cc parser/lex.h parser/parser.cc parser/parser.h typer.cc typer.h parser/expression.h baby_type.h)
+add_executable(baby_sub test.cc parser/lex.cc parser/lex.h parser/parser.cc parser/parser.h typer.cc typer.h parser/expression.h baby_type.h simplifier.cc simplifier.h)
 target_link_libraries(baby_sub ${GTEST_BOTH_LIBRARIES})
 target_link_libraries(baby_sub ${CMAKE_THREAD_LIBS_INIT})
