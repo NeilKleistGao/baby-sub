@@ -1,3 +1,4 @@
+#include <iostream>
 #include <gtest/gtest.h>
 
 #include "parser/lex.h"
@@ -13,6 +14,14 @@ std::string DoTest(const std::string& p_exp) {
     if (syntax_tree == nullptr) {
         return "";
     }
+
+    Typer typer{};
+    auto baby_type = typer.Infer(syntax_tree);
+    if (baby_type == nullptr) {
+        return "";
+    }
+
+    std::cout << "Baby Type: " << baby_type->ToString() << std::endl;
 
     return "";
 }
