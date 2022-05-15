@@ -4,6 +4,7 @@
 #include "parser/lex.h"
 #include "parser/parser.h"
 #include "typer.h"
+#include "simplifier.h"
 
 std::string DoTest(const std::string& p_exp) {
     Lex lex{};
@@ -20,8 +21,13 @@ std::string DoTest(const std::string& p_exp) {
     if (baby_type == nullptr) {
         return "";
     }
-
     std::cout << "Baby Type: " << baby_type->ToString() << std::endl;
+
+    auto compacted = Simplifier::Compact(baby_type);
+    if (compacted == nullptr) {
+        return "";
+    }
+    std::cout << "Compacted Type: " << compacted->ToString() << std::endl;
 
     return baby_type->ToString();
 }
